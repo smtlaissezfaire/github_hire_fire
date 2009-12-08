@@ -27,13 +27,13 @@ module GithubApi
 
   def add_user_to_all_repos(user_name)
     respository_names.each do |repo|
-      add(user_name, repo)
+      add_user(user_name, repo)
     end
   end
 
   def remove_user_from_all_repos(user_name)
     repository_names.each do |repo|
-      remove(user_name, repo)
+      remove_user(user_name, repo)
     end
   end
 
