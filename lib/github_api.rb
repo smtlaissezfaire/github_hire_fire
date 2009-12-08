@@ -2,10 +2,14 @@ require 'uri'
 require 'net/http'
 require 'net/https'
 
-module GithubApi
-  extend self
-
+class GithubApi
   BASE_URL = "https://github.com/api/v2/yaml"
+
+  def initialize
+    @times_called = 0
+  end
+
+  attr_reader :times_called
 
   def add_user(user_name, repository_name)
     puts "* Adding #{user_name} to #{repository_name}"
@@ -55,19 +59,24 @@ private
     puts "* Making request: #{BASE_URL}#{url}"
     url = URI.parse("#{BASE_URL}#{url}")
 
-    req = Net::HTTP::Post.new(url.path)
-    req.set_form_data({'login' => login_info["user"], 'token' => login_info["token"]}, '&')
+    @times_called += 1
 
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    response = http.start { |http| http.request(req) }
+    response = post(url)
 
-    case response
-    when Net::HTTPSuccess, Net::HTTPRedirection
+    if response.is_a?(Net::HTTPSuccess) && response.is_a?(Net::HTTPRedirection)
       YAML.load(response.body)
     else
       response.error!
     end
+  end
+
+  def post(parsed_url)
+    req = Net::HTTP::Post.new(parsed_url)
+    req.set_form_data({'login' => login_info["user"], 'token' => login_info["token"]}, '&')
+
+    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+    http.use_ssl = true
+    response = http.start { |http| http.request(req) }
   end
 
   def find_repositories
