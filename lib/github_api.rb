@@ -30,7 +30,7 @@ class GithubApi
   end
 
   def add_user_to_all_repos(user_name)
-    respository_names.each do |repo|
+    repository_names.each do |repo|
       add_user(user_name, repo)
     end
   end

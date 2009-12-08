@@ -68,4 +68,18 @@ describe GithubApi do
       @api.add_user "smtlaissezfaire", "github_api"
     end
   end
+
+  describe "removing users from all repos" do
+    before do
+      @api.stub!(:repository_names).and_return []
+      @api.stub!(:add_user).and_return []
+    end
+
+    it "should remove a user" do
+      @api.stub!(:repository_names).and_return ["foo"]
+
+      @api.should_receive(:add_user).with("smtlaissezfaire", "foo")
+      @api.add_user_to_all_repos "smtlaissezfaire"
+    end
+  end
 end
