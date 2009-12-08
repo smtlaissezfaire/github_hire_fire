@@ -1,0 +1,77 @@
+require 'uri'
+require 'net/http'
+require 'net/https'
+
+module GithubApi
+  extend self
+
+  BASE_URL = "https://github.com/api/v2/yaml"
+
+  def add_user(user_name, repository_name)
+    puts "* Adding #{user_name} to #{repository_name}"
+    
+    response      = make_request("/repos/collaborators/#{repository_name}/add/#{user_name}")
+    collaborators = response["collaborators"]
+
+    puts "* Collaborators for #{repository_name}: #{collaborators.join(", ")}"
+  end
+
+  def remove_user(user_name, repository_name)
+    puts "* Adding #{user_name} to #{repository_name}"
+    
+    response      = make_request("/repos/collaborators/#{repository_name}/remove/#{user_name}")
+    collaborators = response["collaborators"]
+
+    puts "* Collaborators for #{repository_name}: #{collaborators.join(", ")}"
+  end
+
+  def add_user_to_all_repos(user_name)
+    respository_names.each do |repo|
+      add(user_name, repo)
+    end
+  end
+
+  def remove_user_from_all_repos(user_name)
+    repository_names.each do |repo|
+      remove(user_name, repo)
+    end
+  end
+
+  def repository_names
+    repositories.map { |repo| repo[:name] }
+  end
+
+  def repositories
+    @repositories ||= find_repositories
+  end
+
+private
+
+  def login_info
+    @login_info ||= YAML.load(File.read(File.join(Dir.getwd, "authentication.yml")))
+  end
+
+  def make_request(url)
+    puts "* Making request: #{BASE_URL}#{url}"
+    url = URI.parse("#{BASE_URL}#{url}")
+
+    req = Net::HTTP::Post.new(url.path)
+    req.set_form_data({'login' => login_info[:user], 'token' => login_info[:token]}, '&')
+
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    response = http.start { |http| http.request(req) }
+
+    case response
+    when Net::HTTPSuccess, Net::HTTPRedirection
+      YAML.load(response.body)
+    else
+      response.error!
+    end
+  end
+
+  def find_repositories
+    yaml = make_request("/repos/show/eastmedia")
+    yaml["repositories"]
+  end
+end
