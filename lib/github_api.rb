@@ -9,7 +9,7 @@ module GithubApi
 
   def add_user(user_name, repository_name)
     puts "* Adding #{user_name} to #{repository_name}"
-    
+
     response      = make_request("/repos/collaborators/#{repository_name}/add/#{user_name}")
     collaborators = response["collaborators"]
 
@@ -18,7 +18,7 @@ module GithubApi
 
   def remove_user(user_name, repository_name)
     puts "* Adding #{user_name} to #{repository_name}"
-    
+
     response      = make_request("/repos/collaborators/#{repository_name}/remove/#{user_name}")
     collaborators = response["collaborators"]
 
