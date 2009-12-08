@@ -24,4 +24,38 @@ describe GithubApi do
       @api.times_called.should == 1
     end
   end
+
+  describe "on the 61st call" do
+    before do
+      @api.stub!(:sleep)
+    end
+
+    it "should pause 60 seconds" do
+      60.times do
+        @api.add_user "smtlaissezfaire", "github_api"
+      end
+
+      @api.should_receive(:sleep).with(60)
+      @api.add_user "smtlaissezfaire", "github_api"
+    end
+
+    it "should reset the times called to 1 (after making the call)" do
+      60.times do
+        @api.add_user "smtlaissezfaire", "github_api"
+      end
+
+      @api.add_user "smtlaissezfaire", "github_api"
+
+      @api.times_called.should == 1
+    end
+
+    it "should print that it will sleep for 60 seconds" do
+      60.times do
+        @api.add_user "smtlaissezfaire", "github_api"
+      end
+
+      @api.should_receive(:puts).with("60 api calls made.  Sleeping for 60 seconds")
+      @api.add_user "smtlaissezfaire", "github_api"
+    end
+  end
 end

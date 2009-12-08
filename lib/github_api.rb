@@ -56,17 +56,25 @@ private
   end
 
   def make_request(url)
-    puts "* Making request: #{BASE_URL}#{url}"
-    url = URI.parse("#{BASE_URL}#{url}")
+    if @times_called == 60
+      @times_called = 0
 
-    @times_called += 1
-
-    response = post(url)
-
-    if response.is_a?(Net::HTTPSuccess) && response.is_a?(Net::HTTPRedirection)
-      YAML.load(response.body)
+      puts "60 api calls made.  Sleeping for 60 seconds"
+      sleep(60)
+      make_request(url)
     else
-      response.error!
+      puts "* Making request: #{BASE_URL}#{url}"
+      url = URI.parse("#{BASE_URL}#{url}")
+
+      @times_called += 1
+
+      response = post(url)
+
+      if response.is_a?(Net::HTTPSuccess) && response.is_a?(Net::HTTPRedirection)
+        YAML.load(response.body)
+      else
+        response.error!
+      end
     end
   end
 
