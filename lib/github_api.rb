@@ -56,7 +56,7 @@ private
     url = URI.parse("#{BASE_URL}#{url}")
 
     req = Net::HTTP::Post.new(url.path)
-    req.set_form_data({'login' => login_info[:user], 'token' => login_info[:token]}, '&')
+    req.set_form_data({'login' => login_info["user"], 'token' => login_info["token"]}, '&')
 
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
@@ -71,7 +71,7 @@ private
   end
 
   def find_repositories
-    yaml = make_request("/repos/show/#{login_info[:user]}")
+    yaml = make_request("/repos/show/#{login_info["user"]}")
     yaml["repositories"]
   end
 end
