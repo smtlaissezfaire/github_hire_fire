@@ -5,13 +5,11 @@ describe GithubApi do
     @api = GithubApi.new
     @api.stub!(:puts)
 
-    http = mock(Net::HTTP)
+    http = mock(Net::HTTP, :null_object => true)
     Net::HTTP.stub!(:new).and_return http
 
     @response = mock(Net::HTTPSuccess, :is_a? => true)
     @response.stub!(:body).and_return(YAML.dump({"collaborators" => []}))
-
-    @api.stub!(:post).and_return @response
   end
 
   describe "api reference counter" do
@@ -55,6 +53,18 @@ describe GithubApi do
       end
 
       @api.should_receive(:puts).with("60 api calls made.  Sleeping for 60 seconds")
+      @api.add_user "smtlaissezfaire", "github_api"
+    end
+  end
+
+  describe "calling the api" do
+    it "should parse with the url path" do
+      uri = URI.parse("https://github.com/api/v2/yaml/repos/collaborators/github_api/add/smtlaissezfaire")
+
+      @post = mock 'post', :set_form_data => nil
+      Net::HTTP::Post.stub!(:new).and_return @post
+      Net::HTTP::Post.should_receive(:new).with(uri.path).and_return @post
+
       @api.add_user "smtlaissezfaire", "github_api"
     end
   end

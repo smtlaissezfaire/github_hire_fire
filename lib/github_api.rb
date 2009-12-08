@@ -63,14 +63,13 @@ private
       sleep(60)
       make_request(url)
     else
-      puts "* Making request: #{BASE_URL}#{url}"
-      url = URI.parse("#{BASE_URL}#{url}")
-
       @times_called += 1
 
+      url = "#{BASE_URL}#{url}"
+      puts "* Making request: #{url}"
       response = post(url)
 
-      if response.is_a?(Net::HTTPSuccess) && response.is_a?(Net::HTTPRedirection)
+      if response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPRedirection)
         YAML.load(response.body)
       else
         response.error!
@@ -78,11 +77,13 @@ private
     end
   end
 
-  def post(parsed_url)
-    req = Net::HTTP::Post.new(parsed_url)
+  def post(url)
+    url = URI.parse(url)
+
+    req = Net::HTTP::Post.new(url.path)
     req.set_form_data({'login' => login_info["user"], 'token' => login_info["token"]}, '&')
 
-    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+    http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
     response = http.start { |http| http.request(req) }
   end
