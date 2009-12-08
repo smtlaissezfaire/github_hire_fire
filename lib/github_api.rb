@@ -71,7 +71,7 @@ private
   end
 
   def find_repositories
-    yaml = make_request("/repos/show/eastmedia")
+    yaml = make_request("/repos/show/#{login_info[:user]}")
     yaml["repositories"]
   end
 end
