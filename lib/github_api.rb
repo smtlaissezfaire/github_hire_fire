@@ -1,6 +1,7 @@
 require 'uri'
 require 'net/http'
 require 'net/https'
+require 'yaml'
 
 class GithubApi
   BASE_URL = "https://github.com/api/v2/yaml"
