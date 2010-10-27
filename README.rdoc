@@ -15,5 +15,10 @@ authentication.yml
 
 == Usage:
 
-Hire: ./bin/add_user_to_all a_username
-Fire: ./bin/remove_user_from_all a_username
+Hire:
+
+  ./bin/add_user_to_all a_username
+
+Fire:
+
+  ./bin/remove_user_from_all a_username
