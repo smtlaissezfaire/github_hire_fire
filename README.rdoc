@@ -17,8 +17,8 @@ authentication.yml
 
 Hire:
 
-  ./bin/add_user_to_all a_username
+  ./bin/github_hire a_username
 
 Fire:
 
-  ./bin/remove_user_from_all a_username
+  ./bin/github_fire a_username
