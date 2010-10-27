@@ -3,13 +3,13 @@ require "spec_helper"
 describe GithubApi do
   before do
     @api = GithubApi.new
-    @api.stub!(:puts)
+    @api.stub(:puts)
 
-    http = mock(Net::HTTP, :null_object => true)
-    Net::HTTP.stub!(:new).and_return http
+    http = mock(Net::HTTP).as_null_object
+    Net::HTTP.stub(:new).and_return http
 
     @response = mock(Net::HTTPSuccess, :is_a? => true)
-    @response.stub!(:body).and_return(YAML.dump({"collaborators" => []}))
+    @response.stub(:body).and_return(YAML.dump({"collaborators" => []}))
   end
 
   describe "api reference counter" do
