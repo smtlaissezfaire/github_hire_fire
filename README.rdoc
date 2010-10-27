@@ -1,5 +1,5 @@
 
-A life hack script to ddd (or remove) a user to all of your projects on github.
+A life hack script to add (or remove) a user to all of your projects on github.
 
 We (usually) use this script any time we hire someone.
 
@@ -9,8 +9,11 @@ Clone this project, and create authentication.yml in the root directory of this 
 Create authentication.yml in the root of project:
 
 authentication.yml
-==================
 
-  user: <username>
-  token: <api token>
+  user: "account username"
+  token: "api token"
 
+== Usage:
+
+Hire: ./bin/add_user_to_all a_username
+Fire: ./bin/remove_user_from_all a_username
