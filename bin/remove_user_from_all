@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+if username = ARGV[0]
+  require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "github_api"))
+  GithubApi.new.remove_user_from_all_repos(username)
+else
+  puts ""
+  puts "usage: remove_user_from_all username"
+  puts ""
+end
